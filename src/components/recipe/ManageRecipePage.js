@@ -1,10 +1,11 @@
-import React, {PropTypes} from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import * as recipeActions from '../../actions/recipeActions';
-import RecipeForm from './RecipeForm';
-import {authorsFormattedForDropdown} from '../../selectors/selectors';
+import { RecipeForm } from './RecipeForm';
+import { categoriesFormattedForDropdown } from '../../selectors/selectors';
 import toastr from 'toastr';
+import autobind from 'autobind-decorator';
 
 export class ManageRecipePage extends React.Component {
     constructor(props, context) {
@@ -15,39 +16,78 @@ export class ManageRecipePage extends React.Component {
             errors: {},
             saving: false
         };
-
-        this.updateRecipeState = this.updateRecipeState.bind(this);
-        this.saveRecipe = this.saveRecipe.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.recipe.id != nextProps.recipe.id) {
             // Necessary to populate form when existing course is loaded directly.
-            this.setState({ recipe: Object.assign({}, nextProps.recipe) });
+            this.setState({ recipe: Object.assign({}, nextProps.recipe) });// nextprops.recipe
         }
     }
-
+    
+    @autobind
     updateRecipeState(event) {
-        const field = event.target.name;
+        if (!event.target) {
+            const field = event.name;
+            let recipe = this.state.recipe;
+            recipe[field] = event.value;
+            return this.setState({ recipe: recipe });
+        } else {
+            const field = event.target.name;
+            let recipe = this.state.recipe;
+            recipe[field] = event.target.value;
+            return this.setState({ recipe: recipe });
+        }
+    }
+    
+    @autobind
+    updateRecipeStateIngredient(event) {
         let recipe = this.state.recipe;
-        recipe[field] = event.target.value;
+        const newIngredient = recipe["ingredients"].find((ingredient, index) => index == event.target.dataset.position);
+        newIngredient[event.target.name] = event.target.value;
         return this.setState({ recipe: recipe });
+    }
+    
+    @autobind
+    addIngredient(event) {
+        let recipe = this.state.recipe;
+        const newIngredients = Object.assign([], recipe["ingredients"]);
+        if (recipe["ingredients"].length >= 10) {
+            return;
+        } else {
+            const newIngredient = { ingredient: "", ammount: "" };
+            newIngredients.push(newIngredient);
+            recipe.ingredients = newIngredients;
+            return this.setState({ recipe: recipe });
+        }
+    }
+    
+    @autobind
+    removeIngredient(event) {
+        let recipe = this.state.recipe;
+        if (recipe.ingredients.length <= 1) {
+            return;
+        } else {
+            const newIngredients = recipe["ingredients"].filter((ingredient, index) => index != event.target.dataset.position);
+            recipe.ingredients = newIngredients;
+            return this.setState({ recipe: recipe });
+        }
     }
 
     recipeFormIsValid() {
         let formIsValid = true;
         let errors = {};
 
-        if (this.state.recipe.title.length < 5) {
-            errors.title = 'Title must be at least 5 characters.';
+        if (this.state.recipe.name.length < 5) {
+            errors.name = 'Name must be at least 5 characters.';
             formIsValid = false;
         }
 
         this.setState({ errors: errors });
         return formIsValid;
     }
-
-
+    
+    @autobind
     saveRecipe(event) {
         event.preventDefault();
 
@@ -74,8 +114,11 @@ export class ManageRecipePage extends React.Component {
     render() {
         return (
             <RecipeForm
-                allAuthors={this.props.authors}
+                allCategories={this.props.categories}
                 onChange={this.updateRecipeState}
+                onChangeIngredient={this.updateRecipeStateIngredient}
+                onAdd={this.addIngredient}
+                onRemove={this.removeIngredient}
                 onSave={this.saveRecipe}
                 recipe={this.state.recipe}
                 errors={this.state.errors}
@@ -87,7 +130,7 @@ export class ManageRecipePage extends React.Component {
 
 ManageRecipePage.propTypes = {
     recipe: PropTypes.object.isRequired,
-    authors: PropTypes.array.isRequired,
+    categories: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired
 };
 
@@ -98,14 +141,14 @@ ManageRecipePage.contextTypes = {
 
 function getRecipeById(recipes, id) {
     const recipe = recipes.filter(recipe => recipe.id == id);
-    if (recipe) return recipe[0]; //since filter returns an array, have to grab the first.
+    if (recipe.length) return recipe[0]; //since filter returns an array, have to grab the first.
     return null;
 }
 
 function mapStateToProps(state, ownProps) {
     const recipeId = ownProps.params.id; // from the path `/course/:id`
 
-    let recipe = { id: '', watchHref: '', title: '', authorId: '', length: '', category: '' };
+    let recipe = { id: '', name: '', category: '', chef: '', description: '' };
 
     if (recipeId && state.recipes.length > 0) {
         recipe = getRecipeById(state.recipes, recipeId);
@@ -113,7 +156,7 @@ function mapStateToProps(state, ownProps) {
 
     return {
         recipe: recipe,
-        authors: authorsFormattedForDropdown(state.authors)
+        categories: categoriesFormattedForDropdown(state.categories)
     };
 }
 

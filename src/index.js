@@ -7,11 +7,13 @@ import {Provider} from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import routes from './routes';
 import {loadRecipes} from './actions/recipeActions';
-import './styles/styles.css'; //Webpack can import CSS files too!
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import {loadCategories} from './actions/categoryActions';
+import material from '../node_modules/materialize-css/dist/css/materialize.min.css';
+import toastr from '../node_modules/toastr/build/toastr.min.css';
 
 const store = configureStore();
 store.dispatch(loadRecipes());
+store.dispatch(loadCategories());
 
 render(
     <Provider store={store}>

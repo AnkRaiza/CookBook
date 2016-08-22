@@ -6,17 +6,17 @@ const RecipeList = ({recipes}) => {
         <table className="table">
             <thead>
                 <tr>
-                    <th>&nbsp; </th>
-                    <th>Title</th>
-                    <th>Author</th>
+                    <th>Name</th>
                     <th>Category</th>
-                    <th>Length</th>
+                    <th>Chef</th>
+                    <th>Description</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 {recipes.map(recipe =>
                     <RecipeListRow key={recipe.id} recipe={recipe}/>
-                )}
+                ) }
             </tbody>
         </table>
     );

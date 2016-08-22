@@ -5,44 +5,44 @@ import delay from './delay';
 // All calls return promises.
 const recipes = [
     {
-        id: "react-flux-building-applications",
-        title: "Building Applications in React and Flux",
-        watchHref: "http://www.pluralsight.com/courses/react-flux-building-applications",
-        authorId: "cory-house",
-        length: "5:08",
-        category: "JavaScript"
+        id: "id-1",
+        name: "Name 1",
+        category: "Pastas",
+        chef: "Cheff 1",
+        ingredients: [{ ingredient: "ingredient", ammount: '1' }, { ingredient: "ingredient", ammount: '6' }, { ingredient: "ingredient", ammount: '3' }],
+        description: "something 1"
     },
     {
-        id: "clean-code",
-        title: "Clean Code: Writing Code for Humans",
-        watchHref: "http://www.pluralsight.com/courses/writing-clean-code-humans",
-        authorId: "cory-house",
-        length: "3:10",
-        category: "Software Practices"
+        id: "id-2",
+        name: "Name 2",
+        category: "Salads",
+        chef: "Cheff 2",
+        ingredients: [{ ingredient: "ingredient", ammount: '1' }, { ingredient: "ingredient", ammount: '1' }],
+        description: "something 2"
     },
     {
-        id: "architecture",
-        title: "Architecting Applications for the Real World",
-        watchHref: "http://www.pluralsight.com/courses/architecting-applications-dotnet",
-        authorId: "cory-house",
-        length: "2:52",
-        category: "Software Architecture"
+        id: "id-3",
+        name: "Name 3",
+        category: "Meats",
+        chef: "Cheff 3",
+        ingredients: [{ ingredient: "ingredient", ammount: '1' }],
+        description: "something 3"
     },
     {
-        id: "career-reboot-for-developer-mind",
-        title: "Becoming an Outlier: Reprogramming the Developer Mind",
-        watchHref: "http://www.pluralsight.com/courses/career-reboot-for-developer-mind",
-        authorId: "cory-house",
-        length: "2:30",
-        category: "Career"
+        id: "id-4",
+        name: "Name 4",
+        category: "Desserts",
+        chef: "Cheff 4",
+        ingredients: [{ ingredient: "ingredient", ammount: '1' }, { ingredient: "ingredient", ammount: '1' }],
+        description: "something 4"
     },
     {
-        id: "web-components-shadow-dom",
-        title: "Web Component Fundamentals",
-        watchHref: "http://www.pluralsight.com/courses/web-components-shadow-dom",
-        authorId: "cory-house",
-        length: "5:10",
-        category: "HTML5"
+        id: "id-5",
+        name: "Name 5",
+        category: "Salads",
+        chef: "Cheff 5",
+        ingredients: [{ ingredient: "ingredient", ammount: '1' }],
+        description: "something 5"
     }
 ];
 
@@ -52,14 +52,14 @@ function replaceAll(str, find, replace) {
 
 //This would be performed on the server in a real app. Just stubbing in.
 const generateId = (recipe) => {
-    return replaceAll(recipe.title, ' ', '-');
+    return replaceAll(recipe.name, ' ', '-');
 };
 
-class RecipeApi {
-    static getAllRecipes() {
+export default class RecipeApi {
+    static getAllRecipes(filter = '') {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                resolve(Object.assign([], recipes));
+                resolve(Object.assign([], recipes.filter(recipe => filter === '' || recipe.category === filter)));
             }, delay);
         });
     }
@@ -68,9 +68,9 @@ class RecipeApi {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 // Simulate server-side validation
-                const minRecipeTitleLength = 1;
-                if (recipe.title.length < minRecipeTitleLength) {
-                    reject(`Title must be at least ${minRecipeTitleLength} characters.`);
+                const minRecipeNameLength = 1;
+                if (recipe.name.length < minRecipeNameLength) {
+                    reject(`Recipe name must be at least ${minRecipeNameLength} characters.`);
                 }
 
                 if (recipe.id) {
@@ -81,7 +81,6 @@ class RecipeApi {
                     //The server would generate ids and watchHref's for new recipes in a real app.
                     //Cloning so copy returned is passed by value rather than by reference.
                     recipe.id = generateId(recipe);
-                    recipe.watchHref = `http://www.pluralsight.com/courses/${recipe.id}`;
                     recipes.push(recipe);
                 }
 
@@ -102,5 +101,3 @@ class RecipeApi {
         });
     }
 }
-
-export default RecipeApi;

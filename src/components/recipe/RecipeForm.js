@@ -1,39 +1,49 @@
 import React from 'react';
-import TextInput from '../common/TextInput';
-import SelectInput from '../common/SelectInput';
+import {TextInput} from '../common/TextInput';
+import {SelectInput} from '../common/SelectInput';
+import {IngredientComponent} from '../common/IngredientComponent';
 
-const RecipeForm = ({recipe, allAuthors, onSave, onChange, saving, errors}) => {
+export const RecipeForm = ({recipe, allCategories, onSave, onChange, onChangeIngredient, onAdd, onRemove, saving, errors}) => {
+
     return (
         <form>
             <h1>Manage Recipe</h1>
             <TextInput
-                name="title"
-                label="Title"
-                value={recipe.title}
+                name="name"
+                label="Name"
+                value={recipe.name}
                 onChange={onChange}
-                error={errors.title}/>
+                error={errors.name}/>
 
             <SelectInput
-                name="authorId"
-                label="Author"
-                value={recipe.authorId}
-                defaultOption="Select Author"
-                options={allAuthors}
-                onChange={onChange} error={errors.authorId}/>
-
-            <TextInput
                 name="category"
                 label="Category"
                 value={recipe.category}
-                onChange={onChange}
-                error={errors.category}/>
+                defaultOption="Select category"
+                options={allCategories}
+                onChange={onChange} error={errors.category}/>
 
             <TextInput
-                name="length"
-                label="Length"
-                value={recipe.length}
+                name="chef"
+                label="Chef"
+                value={recipe.chef}
                 onChange={onChange}
-                error={errors.length}/>
+                error={errors.chef}/>
+
+            <IngredientComponent
+                name="ingredients"
+                ingredients={recipe.ingredients}
+                onChange={onChangeIngredient}
+                onAdd={onAdd}
+                onRemove={onRemove}
+                />
+
+            <TextInput
+                name="description"
+                label="Description"
+                value={recipe.description}
+                onChange={onChange}
+                error={errors.description}/>
 
             <input
                 type="submit"
@@ -47,11 +57,12 @@ const RecipeForm = ({recipe, allAuthors, onSave, onChange, saving, errors}) => {
 
 RecipeForm.propTypes = {
     recipe: React.PropTypes.object.isRequired,
-    allAuthors: React.PropTypes.array,
+    allCategories: React.PropTypes.array,
     onSave: React.PropTypes.func.isRequired,
     onChange: React.PropTypes.func.isRequired,
+    onChangeIngredient: React.PropTypes.func.isRequired,
+    onAdd: React.PropTypes.func.isRequired,
+    onRemove: React.PropTypes.func.isRequired,
     saving: React.PropTypes.bool,
     errors: React.PropTypes.object
 };
-
-export default RecipeForm;
