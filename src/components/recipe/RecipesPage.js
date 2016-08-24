@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recipeActions from '../../actions/recipeActions';
-import RecipeList from './RecipeList';
+import {RecipeList} from './RecipeList';
 import {browserHistory} from 'react-router';
 import {SelectInput} from '../common/SelectInput';
 import {categoriesFormattedForDropdown} from '../../selectors/selectors';
@@ -14,7 +14,13 @@ import autobind from 'autobind-decorator';
 }), dispatch => ({
     actions: bindActionCreators(recipeActions, dispatch)
 }))
-export default class RecipesPage extends React.Component {
+export class RecipesPage extends React.Component {
+    static propTypes = {
+        recipes: PropTypes.array.isRequired,
+        categories: PropTypes.array.isRequired,
+        actions: PropTypes.object.isRequired
+    }
+    
     constructor(props, context) {
         super(props, context);
     }
@@ -57,8 +63,3 @@ export default class RecipesPage extends React.Component {
     }
 }
 
-RecipesPage.propTypes = {
-    recipes: PropTypes.array.isRequired,
-    categories: PropTypes.array.isRequired,
-    actions: PropTypes.object.isRequired
-};

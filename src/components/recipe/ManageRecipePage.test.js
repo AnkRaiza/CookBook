@@ -1,7 +1,7 @@
 import React from 'react';
 import expect from 'expect';
 import {mount, shallow} from 'enzyme';
-import ManageRecipePage from './ManageRecipePage';
+import {ManageRecipePage} from './ManageRecipePage';
 
 describe('Manage recipe page', () => {
     it('sets error message when trying to save empty name', () => {

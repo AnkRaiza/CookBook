@@ -15,25 +15,19 @@ export function updateRecipeSuccess(recipe) {
 }
 
 export function loadRecipes(filter = '') {
-    return function (dispatch, getState) {
+    return async (dispatch, getState) => {
         dispatch(beginAjaxCall());
-        return RecipeApi.getAllRecipes(filter).then(recipes => {
-            dispatch(loadRecipesSuccess(recipes));
-        }).catch(error => {
-            throw (error);
-        });
+        const recipes = await RecipeApi.getAllRecipes(filter);
+        if (!recipes) return;
+        dispatch(loadRecipesSuccess(recipes));
     };
 }
 
 export function saveRecipe(recipe) {
-    return function (dispatch, getState) {
+    return async (dispatch, getState) => {
         dispatch(beginAjaxCall());
-        return RecipeApi.saveRecipe(recipe).then(savedRecipe => {
-            recipe.id ? dispatch(updateRecipeSuccess(savedRecipe)) :
-                dispatch(createRecipeSuccess(savedRecipe));
-        }).catch(error => {
-            dispatch(ajaxCallError(error));
-            throw (error);
-        });
+        const savedRecipe = Object.assign({}, await RecipeApi.saveRecipe(recipe));
+        recipe.id ? dispatch(updateRecipeSuccess(savedRecipe)) :
+            dispatch(createRecipeSuccess(savedRecipe));
     };
 }

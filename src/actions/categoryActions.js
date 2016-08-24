@@ -7,12 +7,10 @@ export function loadCategoriesSuccess(categories) {
 }
 
 export function loadCategories() {
-  return dispatch => {
+  return async (dispatch, getState) => {
     dispatch(beginAjaxCall());
-    return CategoryApi.getAllCategories().then(categories => {
-      dispatch(loadCategoriesSuccess(categories));
-    }).catch(error => {
-      throw (error);
-    });
-  };
+    const categories = await CategoryApi.getAllCategories();
+    if (!categories) return;
+    dispatch(loadCategoriesSuccess(categories));
+  }
 }

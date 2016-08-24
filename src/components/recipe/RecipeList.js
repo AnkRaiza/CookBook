@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
-import RecipeListRow from './RecipeListRow';
+import {RecipeListRow} from './RecipeListRow';
 
-const RecipeList = ({recipes}) => {
+export const RecipeList = ({recipes}) => {
     return (
         <table className="table">
             <thead>
@@ -25,5 +25,3 @@ const RecipeList = ({recipes}) => {
 RecipeList.propTypes = {
     recipes: PropTypes.array.isRequired
 };
-
-export default RecipeList;

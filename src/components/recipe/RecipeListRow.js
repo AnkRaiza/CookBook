@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
-const RecipeListRow = ({recipe}) => {
+export const RecipeListRow = ({recipe}) => {
     return (
         <tr>
             <td>{recipe.name}</td>
@@ -16,5 +16,3 @@ const RecipeListRow = ({recipe}) => {
 RecipeListRow.propTypes = {
     recipe: PropTypes.object.isRequired
 };
-
-export default RecipeListRow;
