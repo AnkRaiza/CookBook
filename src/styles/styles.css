@@ -9,3 +9,8 @@
 :local(.background_color){
   background-color: #ee6e10;
 }
+
+:local(.half_width){
+  width: 45%!important;
+  margin-right: 5px!important;
+}

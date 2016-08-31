@@ -15,6 +15,10 @@ export default function recipeReducer(state = initialState.recipes, action) {
                 ...state.filter(recipe => recipe.id !== action.recipe.id),
                 Object.assign({}, action.recipe)
             ];
+        case types.DELETE_RECIPE_SUCCESS:
+            return [
+                ...state.filter(recipe => recipe.id != action.recipeId)
+            ];
         case types.UPDATE_LIST_FILTER_SUCCESS:
             return [action.recipes];
         default:

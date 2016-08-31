@@ -20,7 +20,7 @@ export class RecipesPage extends React.Component {
         categories: PropTypes.array.isRequired,
         actions: PropTypes.object.isRequired
     }
-    
+
     constructor(props, context) {
         super(props, context);
     }
@@ -28,6 +28,11 @@ export class RecipesPage extends React.Component {
     @autobind
     onChange(event) {
         this.props.actions.loadRecipes(event.value);
+    }
+
+    @autobind
+    deleteRecipe(event) {
+        this.props.actions.deleteRecipe(event.target.dataset.id);
     }
 
     recipeRow(recipe, index) {
@@ -57,7 +62,7 @@ export class RecipesPage extends React.Component {
                     actions={this.props.actions}
                     onChange={this.onChange}
                     />
-                <RecipeList recipes={recipes}/>
+                <RecipeList recipes={recipes} onDelete={this.deleteRecipe}/>
             </div>
         );
     }

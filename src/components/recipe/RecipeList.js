@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {RecipeListRow} from './RecipeListRow';
 
-export const RecipeList = ({recipes}) => {
+export const RecipeList = ({recipes, onDelete}) => {
     return (
         <table className="table">
             <thead>
@@ -15,7 +15,7 @@ export const RecipeList = ({recipes}) => {
             </thead>
             <tbody>
                 {recipes.map(recipe =>
-                    <RecipeListRow key={recipe.id} recipe={recipe}/>
+                    <RecipeListRow key={recipe.id} recipe={recipe} onDelete={onDelete}/>
                 ) }
             </tbody>
         </table>
@@ -23,5 +23,6 @@ export const RecipeList = ({recipes}) => {
 };
 
 RecipeList.propTypes = {
-    recipes: PropTypes.array.isRequired
+    recipes: PropTypes.array.isRequired,
+    onDelete: PropTypes.func
 };

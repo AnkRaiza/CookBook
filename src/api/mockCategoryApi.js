@@ -1,4 +1,5 @@
 import delay from './delay';
+import superagent from 'superagent';
 
 // This file mocks a web API by working with the hard-coded data below.
 // It uses setTimeout to simulate the delay of an AJAX call.
@@ -28,12 +29,9 @@ const generateId = (category) => {
 };
 
 export default class CategoryApi {
-    static getAllCategories() {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve(Object.assign([], categories));
-            }, delay);
-        });
+    static async getAllCategories() {
+        var categories = await superagent['get']('http://localhost:4000/api/categories');
+        return categories.body;
     }
 
     static saveCategory(category) {

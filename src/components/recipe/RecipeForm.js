@@ -16,9 +16,9 @@ export const RecipeForm = ({recipe, allCategories, onSave, onChange, onChangeIng
                 error={errors.name}/>
 
             <SelectInput
-                name="category"
+                name="category_id"
                 label="Category"
-                value={recipe.category}
+                value={recipe.category_id}
                 defaultOption="Select category"
                 options={allCategories}
                 onChange={onChange} error={errors.category}/>

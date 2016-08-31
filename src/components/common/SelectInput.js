@@ -16,7 +16,11 @@ export class SelectInput extends React.Component {
 
   onChange() {
     if (!this.props.onChange) return;
-    const selectObject = Object.assign({ name: this.props.name, value: this.refs.select.value });
+    const selectObject = Object.assign({
+      name: this.props.name,
+      value: this.refs.select.value,
+      text: this.refs.select.options[this.refs.select.selectedIndex].innerHTML
+    });
     this.props.onChange(selectObject);
   }
 
@@ -48,7 +52,7 @@ SelectInput.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   defaultOption: PropTypes.string,
-  value: PropTypes.string,
+  value: PropTypes.number,
   error: PropTypes.stringSelectInput,
   options: PropTypes.arrayOf(PropTypes.object),
   onChange: PropTypes.func.isRequired

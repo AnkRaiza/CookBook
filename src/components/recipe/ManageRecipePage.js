@@ -6,12 +6,14 @@ import { RecipeForm } from './RecipeForm';
 import { categoriesFormattedForDropdown } from '../../selectors/selectors';
 import toastr from 'toastr';
 import autobind from 'autobind-decorator';
+import superagent from 'superagent';
 
 let mapStateToProps = (state, ownProps) => {
     const recipeId = ownProps.params.id;// from the path `/course/:id`
-    let recipe = { id: '', name: '', category: '', chef: '', description: '', ingredients: [] };
+    let recipe = { id: '', name: '', category_id: 0, category: '', chef: '', description: '', ingredients: [] };
     if (recipeId && state.recipes.length > 0) {
         recipe = getRecipeById(state.recipes, recipeId);
+        recipe.ingredients = [];
     }
     return {
         recipe: recipe,
@@ -40,6 +42,14 @@ export class ManageRecipePage extends React.Component {
             errors: {},
             saving: false
         };
+        var x = this.loadRecipeById(props.recipe.id);
+    }
+
+    async loadRecipeById(id) {
+        if (!id) return;
+        const url = 'http://localhost:4000/api/recipe/' + id;
+        var recipe = await superagent['get']('http://localhost:4000/api/recipe/' + id);
+        if (recipe) return this.setState({ recipe: recipe.body });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -53,6 +63,7 @@ export class ManageRecipePage extends React.Component {
         let recipe = this.state.recipe;
         const field = !event.target ? event.name : event.target.name;
         recipe[field] = !event.target ? event.value : event.target.value;
+        if (event.text) recipe.category = event.text;
         return this.setState({ recipe: recipe });
     }
 
@@ -112,9 +123,7 @@ export class ManageRecipePage extends React.Component {
         if (!this.recipeFormIsValid()) {
             return;
         }
-
         this.setState({ saving: true });
-
         this.props.actions.saveRecipe(this.state.recipe)
             .then(() => this.redirect())
             .catch(error => {

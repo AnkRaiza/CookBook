@@ -14,6 +14,10 @@ export function updateRecipeSuccess(recipe) {
     return { type: types.UPDATE_RECIPE_SUCCESS, recipe };
 }
 
+export function deleteRecipeSuccess(recipeId) {
+    return { type: types.DELETE_RECIPE_SUCCESS, recipeId };
+}
+
 export function loadRecipes(filter = '') {
     return async (dispatch, getState) => {
         dispatch(beginAjaxCall());
@@ -29,5 +33,13 @@ export function saveRecipe(recipe) {
         const savedRecipe = Object.assign({}, await RecipeApi.saveRecipe(recipe));
         recipe.id ? dispatch(updateRecipeSuccess(savedRecipe)) :
             dispatch(createRecipeSuccess(savedRecipe));
+    };
+}
+
+export function deleteRecipe(recipe) {
+    return async (dispatch, getState) => {
+        dispatch(beginAjaxCall());
+        const deleted = await RecipeApi.deleteRecipe(recipe);
+        dispatch(deleteRecipeSuccess(recipe));
     };
 }

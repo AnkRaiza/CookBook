@@ -1,4 +1,7 @@
 import delay from './delay';
+import superagent from 'superagent';
+
+
 
 // This file mocks a web API by working with the hard-coded data below.
 // It uses setTimeout to simulate the delay of an AJAX call.
@@ -56,48 +59,41 @@ const generateId = (recipe) => {
 };
 
 export default class RecipeApi {
-    static getAllRecipes(filter = '') {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve(Object.assign([], recipes.filter(recipe => filter === '' || recipe.category === filter)));
-            }, delay);
-        });
+    static async getAllRecipes(filter = '') {
+        var recipes = await superagent['get']('http://localhost:4000/api/recipes');
+        return recipes.body;
     }
 
-    static saveRecipe(recipe) {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Simulate server-side validation
-                const minRecipeNameLength = 1;
-                if (recipe.name.length < minRecipeNameLength) {
-                    reject(`Recipe name must be at least ${minRecipeNameLength} characters.`);
-                }
-
-                if (recipe.id) {
-                    const existingRecipeIndex = recipes.findIndex(a => a.id == recipe.id);
-                    recipes.splice(existingRecipeIndex, 1, recipe);
-                } else {
-                    //Just simulating creation here.
-                    //The server would generate ids and watchHref's for new recipes in a real app.
-                    //Cloning so copy returned is passed by value rather than by reference.
-                    recipe.id = generateId(recipe);
-                    recipes.push(recipe);
-                }
-
-                resolve(Object.assign({}, recipe));
-            }, delay);
-        });
+    static async getRecipeById(id) {
+        var recipe = await superagent['get']('http://localhost:4000/api/recipe/' + id);
+        return recipe.body;
     }
 
-    static deleteRecipe(recipeId) {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                const indexOfRecipeToDelete = recipes.findIndex(recipe => {
-                    recipe.recipeId == recipeId;
-                });
-                recipes.splice(indexOfRecipeToDelete, 1);
-                resolve();
-            }, delay);
+    static async saveRecipe(recipe) {
+        const minRecipeNameLength = 1;
+        if (recipe.name.length < minRecipeNameLength) {
+            reject(`Recipe name must be at least ${minRecipeNameLength} characters.`);
+        }
+
+        if (recipe.id) {
+            let insertRecipe = await superagent['put']('http://localhost:4000/api/recipes')
+                .set('Content-Type', 'application/json')
+                .send({ recipe });
+            recipe.id = insertRecipe.body;
+        } else {
+            let insertRecipe = await superagent['post']('http://localhost:4000/api/recipes')
+                .set('Content-Type', 'application/json')
+                .send({ recipe });
+            recipe.id = insertRecipe.body;
+        }
+        return Object.assign({}, recipe);
+    }
+
+    static async deleteRecipe(recipeId) {
+        const deleted = await superagent['delete']('http://localhost:4000/api/recipe/' + recipeId);
+        const indexOfRecipeToDelete = recipes.findIndex(recipe => {
+            recipe.recipeId == recipeId;
         });
+        recipes.splice(indexOfRecipeToDelete, 1);
     }
 }
